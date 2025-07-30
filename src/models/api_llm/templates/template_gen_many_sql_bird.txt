@@ -1,0 +1,64 @@
+You are an expert and very smart about database.Add commentMore actions
+This task is linking between question tokens and column.
+Database schema and question are provided.
+Database schema have format like :
+###
+Table table_name, columns= [`column1` (explain meaning of column1. Example values: [list of example stored in database]), `column2` (explain meaning of column2), `column3`]
+###
+From the question and hint of column need to link with question tokens.
+Write all possible SQL query to answer the question.
+Write your answer in json format like:
+```json
+{{
+    "queries": [
+        SQL query 1,
+        SQL query 2,
+        ...
+        SQL query N
+    ]
+}}
+```
+
+Example:
+Database schema:
+###
+Table app_all, columns = [`app_id` (app_id. Example values: [-9223281467940916832, -9222877069545393219, -9222785464897897681])]
+Table app_events, columns = [`event_id` (event id. Example values: [2, 6, 7]), `app_id` (app id. Example values: [-8942695423876075857, -8022267440849930066, -5720078949152207372]), `is_installed` (is installed. Example values: [1]), `is_active` (is active. Example values: [0, 1])]
+Table app_events_relevant, columns = [`event_id` (event_id. Example values: [2, 6, 7]), `app_id` (app_id. Example values: [-8942695423876075857, -8022267440849930066, -5720078949152207372]), `is_installed` (is_installed. Example values: [1]), `is_active` (is_active. Example values: [0, 1])]
+Table app_labels, columns = [`app_id` (app id. Example values: [7324884708820027918, -4494216993218550286, 6058196446775239644]), `label_id` (label id. Example values: [251, 406, 407])]
+Table events, columns = [`event_id` (event id. Example values: [1, 2, 3]), `device_id` (device id. Example values: [29182687948017175, -6401643145415154744, -4833982096941402721]), `timestamp` (timestamp. Example values: [2016-05-01 00:55:25.0, 2016-05-01 00:54:12.0, 2016-05-01 00:08:05.0]), `longitude` (longitude. Example values: [121.0, 104.0, 107.0]), `latitude` (latitude. Example values: [31.0, 30.0, 23.0])]
+Table events_relevant, columns = [`event_id` (event_id. Example values: [2, 6, 7]), `device_id` (device_id. Example values: [None]), `timestamp` (timestamp. Example values: [-8942695423876075857, -8764672938472212518, -9050100410106163077]), `longitude` (longitude. Example values: [1.0]), `latitude` (latitude. Example values: [0.0, 1.0])]
+Table gender_age, columns = [`device_id` (device id. Example values: [-9221086586254644858, -9221079146476055829, -9221066489596332354]), `gender` (gender. Example values: [M, None, F]), `age` (age. Example values: [29, None, 31]), `group` (group. Example values: [M29-31, None, M32-38])]
+Table gender_age_test, columns = [`device_id` (device_id. Example values: [-9223321966609553846, -9223042152723782980, -9222896629442493034])]
+Table gender_age_train, columns = [`device_id` (device_id. Example values: [-9223067244542181226, -9222956879900151005, -9222754701995937853]), `gender` (gender. Example values: [M, F]), `age` (age. Example values: [24, 36, 29]), `group` (group. Example values: [M23-26, M32-38, M29-31])]
+Table label_categories, columns = [`label_id` (label id. Example values: [1, 2, 3]), `category` (category. Example values: [None, game-game type, game-Game themes])]
+Table phone_brand_device_model2, columns = [`device_id` (device id. Example values: [-9223321966609553846, -9223067244542181226, -9223042152723782980]), `phone_brand` (phone brand. Example values: [小米, vivo, 三星]), `device_model` (device model. Example values: [红米note, Y19T, MI 3])]
+Table sample_submission, columns = [`device_id` (device_id. Example values: [-9223321966609553846, -9223042152723782980, -9222896629442493034]), `f23-` (f23-. Example values: [0.0833]), `f24-26` (f24-26. Example values: [0.0833]), `f27-28` (f27-28. Example values: [0.0833]), `f29-32` (f29-32. Example values: [0.0833]), `f33-42` (f33-42. Example values: [0.0833]), `f43+` (f43+. Example values: [0.0833]), `m22-` (m22-. Example values: [0.0833]), `m23-26` (m23-26. Example values: [0.0833]), `m27-28` (m27-28. Example values: [0.0833]), `m29-31` (m29-31. Example values: [0.0833]), `m32-38` (m32-38. Example values: [0.0833]), `m39+` (m39+. Example values: [0.0833])]
+foreign keys = [app_events.event_id = events.event_id, app_events_relevant.app_id = app_all.app_id, app_events_relevant.event_id = events_relevant.event_id, app_labels.app_id = app_all.app_id, app_labels.label_id = label_categories.label_id, events_relevant.device_id = gender_age.device_id, gender_age.device_id = phone_brand_device_model2.device_id]
+###
+Question: Please provide the gender of at least one user who owns an HTC Desire 826 device.HTC Desire 826 refers to phone_brand = 'HTC' AND device_model = 'Desire 826';
+###
+Hint of column to link with question tokens:
+{{'gender': ['gender_age.gender', 'gender_age_train.gender', 'gender_age_train.group']}}
+Answer:
+```json
+{{
+    "queries": [
+        "SELECT gender FROM gender_age WHERE device_id IN (SELECT device_id FROM phone_brand_device_model2 WHERE phone_brand = 'HTC' AND device_model = 'Desire 826') LIMIT 1",
+        "SELECT gender FROM gender_age_train WHERE device_id IN (SELECT device_id FROM phone_brand_device_model2 WHERE phone_brand = 'HTC' AND device_model = 'Desire 826') LIMIT 1",
+        "SELECT group FROM gender_age_train WHERE device_id IN (SELECT device_id FROM phone_brand_device_model2 WHERE phone_brand = 'HTC' AND device_model = 'Desire 826') LIMIT 1",
+        "SELECT T1.gender FROM gender_age AS T1 INNER JOIN phone_brand_device_model2 AS T2 ON T1.device_id = T2.device_id WHERE T2.device_model = 'Desire 826' AND T2.phone_brand = 'HTC'"
+    ]
+}}
+```
+
+Database schema:
+###
+{SCHEMA_STR}
+###
+Question: {QUESTION_TEXT}
+###
+Hint of column to link with question tokens:
+{HINT}
+Answer:
+```json

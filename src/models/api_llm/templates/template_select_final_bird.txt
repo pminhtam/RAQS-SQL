@@ -1,0 +1,64 @@
+You are an expert and very smart about database.
+This task is choosing best SQL query from list of provided SQL queries.
+Database schema and question are provided.
+Database schema have format like :
+###
+table1 : column1, column2, column3
+###
+Write your answer in format like:
+```sql
+sql query
+```
+
+Example:
+Database schema:
+###
+Table state, columns = [`statecode` (statecode. Example values: [AL, AR, AZ]), `state` (state. Example values: [Alabama, Arkansas, Arizona]), `region` (region. Example values: [South, West, Northeast])]
+Table callcenterlogs, columns = [`date received` (date received. Example values: [2017-03-27, 2017-03-23, 2017-03-22]), `complaint id` (complaint id. Example values: [None, CR0000072, CR0000084]), `rand client` (rand client. Example values: [C00004587, C00003328, C00001685]), `phonefinal` (phone final. Example values: [977-806-9726, 322-598-7152, 508-311-5237]), `vru+line` (voice response unit line. Example values: [AA0103, AA0205, AA0110]), `call_id` (call id. Example values: [34536, 34537, 34538]), `priority` (priority. Example values: [0, 2, 1]), `type` (type. Example values: [NW, PS, NE]), `outcome` (outcome. Example values: [AGENT, HANG, PHANTOM]), `server` (server. Example values: [MICHAL, TOVA, YIFAT]), `ser_start` (server start. Example values: [13:34:11, 10:58:22, 13:00:54]), `ser_exit` (server exit. Example values: [13:40:23, 11:16:10, 13:13:31]), `ser_time` (server time. Example values: [00:06:12, 00:17:48, 00:12:37])]
+Table client, columns = [`client_id` (client id. Example values: [C00000001, C00000002, C00000003]), `sex` (sex. Example values: [Female, Male]), `day` (day. Example values: [13, 4, 9]), `month` (month. Example values: [12, 2, 10]), `year` (year. Example values: [1990, 1965, 1960]), `age` (age. Example values: [29, 54, 59]), `social` (social. Example values: [926-93-2157, 806-94-5725, 614-70-9100]), `first` (first. Example values: [Emma, Noah, Olivia]), `middle` (middle. Example values: [Avaya, Everest, Brooklynne]), `last` (last. Example values: [Smith, Thompson, Johnson]), `phone` (phone. Example values: [367-171-6840, 212-423-7734, 212-425-6932]), `email` (email. Example values: [emma.smith@gmail.com, noah.thompson@gmail.com, olivia.johnson@outlook.com]), `address_1` (address_1. Example values: [387 Wellington Ave., 75 W. Berkshire St., 36 Second St.]), `address_2` (address_2. Example values: [Unit 1, None, Unit 6]), `city` (city. Example values: [Albuquerque, New York City, Indianapolis]), `state` (state. Example values: [NM, NY, IN]), `zipcode` (zipcode. Example values: [47246, 10040, 10162]), `district_id` (district id. Example values: [18, 1, 5])]
+Table district, columns = [`district_id` (district id. Example values: [1, 2, 3]), `city` (city. Example values: [New York City, Jacksonville, Columbus]), `state_abbrev` (state_abbrev. Example values: [NY, FL, OH]), `division` (division. Example values: [Middle Atlantic, South Atlantic, East North Central])]
+Table events, columns = [`date received` (date received. Example values: [2014-07-03, 2012-04-12, 2012-04-03]), `product` (product. Example values: [Bank account or service, Credit card]), `sub-product` (sub-product. Example values: [Checking account, Savings account, None]), `issue` (issue. Example values: [Deposits and withdrawals, Account opening, closing, or management, Billing disputes]), `sub-issue` (sub-issue. Example values: [None]), `consumer complaint narrative` (consumer complaint narrative. Example values: [None]), `tags` (tags. Example values: [None, Older American, Older American, Servicemember]), `consumer consent provided?` (tags consumer consent provided?. Example values: [N/A, Consent not provided, None]), `submitted via` (submitted via. Example values: [Email, Fax, Postal mail]), `date sent to company` (date sent to company. Example values: [2014-07-09, 2012-04-13, 2012-04-03]), `company response to consumer` (company response to consumer. Example values: [Closed with explanation, Closed with relief, Closed without relief]), `timely response?` (timely response?. Example values: [Yes, No]), `consumer disputed?` (consumer disputed?. Example values: [No, None, Yes]), `complaint id` (complaint id. Example values: [CR0000072, CR0000084, CR0000140]), `client_id` (client id. Example values: [C00003714, C00001366, C00002330])]
+Table reviews, columns = [`date` (date. Example values: [2013-02-04, 2013-02-06, 2013-02-08]), `stars` (stars. Example values: [5, 1, 2]), `reviews` (reviews. Example values: []), `product` (product. Example values: [Eagle National Mortgage, Eagle National Bank, Eagle Capital]), `district_id` (district_id. Example values: [65, 66, 23])]
+foreign keys = [callcenterlogs.rand client = client.client_id, client.district_id = district.district_id, district.state_abbrev = state.StateCode, events.Client_ID = client.client_id, events.Complaint ID = callcenterlogs.Complaint ID, reviews.district_id = district.district_id]
+###
+Question: Among the teenager clients who use Google account and Microsoft account, which group of client is more than the other?teenager refers to 13 < age < = 19; Google account refers to email like '%@gmail.com'; Microsoft account refers to email like '%@outlook.com'
+###
+List of provided SQL queries:
+SQL query:
+```sql
+SELECT email, COUNT(*) as count FROM client WHERE age > 13 AND age <= 19 AND email LIKE '%@gmail.com' GROUP BY email HAVING COUNT(*) > (SELECT COUNT(*) FROM client WHERE age > 13 AND age <= 19 AND email LIKE '%@outlook.com')
+```
+This execution results: []
+SQL query:
+```sql
+SELECT email, COUNT(*) as count FROM client WHERE age > 13 AND age <= 19 AND email LIKE '%@outlook.com' GROUP BY email HAVING COUNT(*) > (SELECT COUNT(*) FROM client WHERE age > 13 AND age <= 19 AND email LIKE '%@gmail.com')
+```
+This execution results: []
+SQL query:
+```sql
+SELECT (CASE WHEN SUM(CASE WHEN email LIKE '%@gmail.com' THEN 1 ELSE 0 END) > SUM(CASE WHEN email LIKE '%@outlook.com' THEN 1 ELSE 0 END) THEN 'Google Account' ELSE 'Microsoft Account' END) as more_used_account FROM client WHERE age > 13 AND age <= 19
+```
+This execution results: [('Google Account',)]
+SQL query:
+```sql
+SELECT CASE WHEN SUM(CASE WHEN email LIKE '%@gmail.com' THEN 1 ELSE 0 END) > SUM(CASE WHEN email LIKE '%@outlook.com' THEN 1 ELSE 0 END) THEN 'Google account' ELSE 'Microsoft account' END FROM client WHERE age BETWEEN 13 AND 19
+```
+This execution results: [('Google account',)]
+Answer:
+The first two queries have a logical flaw: they attempt to group by email and then use a `HAVING` clause to compare counts across different groups, which is not the correct approach for this problem. They are comparing the count of each individual email address to the count of all '@outlook.com' or '@gmail.com' emails, respectively, which will not yield the correct result.
+The third and fourth queries basicallly similarly count the number of clients with '@gmail.com' and '@outlook.com' emails among teenagers and compare them directly.
+The main difference between the third and fourth queries is that word "Google Account" and 'Microsoft Account' is used in the third query, while "Google account" and 'Microsoft account' is used in the fourth query. The capitalization difference does not affect the logic of the query.
+But the word "Google account" and 'Microsoft account' is more consistent with the question's phrasing.
+Therefore, the best SQL query to use is:
+```sql
+SELECT CASE WHEN SUM(CASE WHEN email LIKE '%@gmail.com' THEN 1 ELSE 0 END) > SUM(CASE WHEN email LIKE '%@outlook.com' THEN 1 ELSE 0 END) THEN 'Google account' ELSE 'Microsoft account' END FROM client WHERE age BETWEEN 13 AND 19
+```
+
+Database schema:
+###
+{SCHEMA_STR}
+###
+Question: {QUESTION_TEXT}
+###
+List of provided SQL queries: {EXISTING_SQL_QUERY}
+Answer:

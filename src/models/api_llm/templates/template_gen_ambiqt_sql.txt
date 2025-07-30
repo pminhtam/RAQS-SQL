@@ -1,0 +1,94 @@
+You are an expert and very smart about database.Add commentMore actions
+This task is linking between question tokens and column.
+Database schema and question are provided.
+Database schema have format like :
+###
+Table table_name, columns= [`column1` (explain meaning of column1. Example values: [list of example stored in database]), `column2` (explain meaning of column2), `column3`]
+###
+From the question and hint of column need to link with question tokens.
+Write all possible SQL query to answer the question.
+Write your answer in json format.
+```
+{{
+    "queries": [
+        SQL query 1,
+        SQL query 2,
+        ...
+        SQL query N
+    ]
+}}
+```
+
+Example 1:
+Database schema:
+###
+Table investors, columns =  investor_id (9, 15, 17), investor_details (\"l\", \"c\", \"d\")
+Table lots, columns =  lot_id (8, 2, 12), lot_details (\"s\", \"x\", \"q\"), investor_id (20, 10, 9)
+Table ref_transaction_types, columns =  transaction_type_code (\"PUR\", \"SALE\"), type_description (\"Sale\", \"Purchase\"), description (\"Sale\", \"Purchase\")
+Table transactions, columns =  transaction_id (10, 15, 1), amount_of_transaction (29.3534, 8.9, 183.2), other_details (None), date_of_transaction (\"1988-09-16 19:02:51\", \"1990-12-02 09:03:38\", \"1977-08-17 13:13:30\"), share_count (\"\", \"8040\", \"\"), investor_id (18, 19, 3), transaction_type_code (\"SALE\", \"PUR\")
+Table sales, columns =  sales_details (\"f\", \"e\", \"a\"), sales_transaction_id (14, 8, 12)
+Table purchases, columns =  purchase_transaction_id (9, 4, 3), purchase_details (\"t\", \"i\", \"x\")
+Table transactions_lots, columns =  lot_id (14, 4, 1), transaction_id (1, 14, 1)
+###
+Question: Show the transaction type descriptions and dates if the share count is smaller than 10.
+Hint of column to link with question tokens:
+{{
+  'transaction type': ['ref_transaction_types.type_description', 'ref_transaction_types.description'],
+  'dates': ['transactions.date_of_transaction'],
+  'share count': ['transactions.share_count']
+}}
+Answer:
+```
+{{
+    "queries": [
+        "select t1.type_description, t2.date_of_transaction from ref_transaction_types as t1 join transactions as t2 on t1.transaction_type_code = t2.transaction_type_code where t2.share_count < 10",
+        "select t1.description, t2.date_of_transaction from ref_transaction_types as t1 join transactions as t2 on t1.transaction_type_code = t2.transaction_type_code where t2.share_count < 10"
+    ]
+}}
+```
+
+Example 2:
+Database schema:
+###
+Table third_party_companies, columns =  company_type (\"Maintenance Contractor\", \"Supplier\"), company_id (15, 15, 3), other_company_details (\"Kiribati\", \"Armenia\", \"Albania\"), company_name (\"Weimann-Swift\", \"Weimann-Swift\", \"Glover-Vandervort\"), company_address (\"9405 Leffler Hollow Apt. 753\", \"016 Kaitlyn Fall Suite 236\", \"615 Jacobs Mews\")
+Table maintenance_contracts, columns =  maintenance_contract_id (8, 2, 4), other_contract_details (None), contract_start_date (\"2017-05-04 13:39:18\", \"2017-09-19 17:57:17\", \"2017-06-14 01:46:59\"), contract_end_date (\"2018-03-07 19:30:50\", \"2018-03-15 06:45:00\", \"2018-02-27 05:03:22\"), maintenance_contract_company_id (10, 11, 4)
+Table parts, columns =  other_part_details (None), chargeable_yn (\"0\", \"1\"), part_name (\"top\", \"middle\", \"package\"), part_id (1, 2, 3), chargeable_amount (\"4\", \"9\")
+Table skills, columns =  skill_description (\"Electrical\", \"Mechanical\", \"TV, Video\"), skill_id (1, 2, 3), skill_code (\"ELEC\", \"MECH\", \"TV\")
+Table staff, columns =  gender (\"1\", \"0\"), staff_id (13, 1, 9), other_staff_details (\"Manager\", None, \"Woker\"), staff_name (\"Bernice\", \"Jeffry\", \"Rodger\")
+Table assets, columns =  asset_disposed_date (\"2018-03-08 18:42:41\", \"2018-03-17 00:51:14\", \"2018-03-08 18:42:41\"), maintenance_contract_id (6, 8, 11), asset_acquired_date (\"2017-09-26 14:05:46\", \"2017-09-07 08:13:15\", \"2017-06-12 17:37:19\"), asset_model (\"69 uv\", \"24 ak\", \"91 ub\"), other_asset_details (None, \"Bad condition\"), asset_details (\"monitor1\", \"machine4\", \"monitor2\"), supplier_company_id (7, 13, 13), asset_make (\"IT\", \"IT\", \"CN\"), asset_id (9, 5, 13)
+Table asset_parts, columns =  part_id (3, 1, 2), asset_id (4, 14, 10)
+Table maintenance_engineers, columns =  other_details (\"Skilled\", None), company_id (3, 11, 14), family_name (\"Goldner\", \"Goldner\", \"Orn\"), first_name (\"Nellie\", \"Archibald\", \"Samanta\"), engineer_id (15, 7, 8), surname (\"Goldner\", \"Goldner\", \"Orn\")
+Table engineer_skills, columns =  skill_id (2, 1, 3), engineer_id (4, 7, 12)
+Table fault_log, columns =  asset_id (3, 12, 9), recorded_by_staff_id (8, 14, 5), fault_log_entry_datetime (\"2018-03-10 07:08:34\", \"2018-02-28 02:07:36\", \"2018-02-28 02:07:36\"), fault_log_entry_id (1, 7, 4), other_fault_details (None), fault_description (\"system error\", \"failed parts\")
+Table engineer_visits, columns =  fault_log_entry_id (13, 4, 10), engineer_id (6, 1, 11), visit_end_datetime (\"1970-08-01 15:35:51\", \"2007-11-12 04:24:01\", \"1973-09-12 07:06:54\"), contact_staff_id (12, 8, 14), visit_start_datetime (\"2010-02-23 18:16:23\", \"2006-03-31 20:03:10\", \"1984-07-14 22:47:51\"), engineer_visit_id (6, 12, 6), other_visit_details (None), fault_status (\"Waiting\", \"Fixed\", \"Return\")
+Table part_faults, columns = fault_short_name (\"PW\", \"TW\", \"MW\"), part_fault_id (13, 1, 1), part_id (1, 3, 2), fault_description (\"Package Wrong\", \"Top Parts Wrong\", \"Medium Scale Wrong\"), other_fault_details (None)
+Table fault_log_parts, columns =  fault_log_entry_id (14, 1, 7), fault_status (\"Waiting\", \"Return\", \"Waiting\"), part_fault_id (2, 14, 3)
+Table skills_required_to_fix, columns =  part_fault_id (14, 5, 1), skill_id (2, 3, 1)
+###
+Question: Which staff have contacted which engineers? List the staff name and the engineer first name and last name.
+Hint of column to link with question tokens:
+{{
+  'staff name': ['staff.staff_name'],
+  'engineer first name': ['maintenance_engineers.first_name'],
+  'last name': ['maintenance_engineers.family_name', 'maintenance_engineers.surname']
+}}
+Answer:
+```
+{{
+    "queries": [
+        "select t1.staff_name, t3.first_name, t3.surname from staff as t1 join engineer_visits as t2 on t1.staff_id = t2.contact_staff_id join maintenance_engineers as t3 on t2.engineer_id = t3.engineer_id",
+        "select t1.staff_name, t3.first_name, t3.family_name from staff as t1 join engineer_visits as t2 on t1.staff_id = t2.contact_staff_id join maintenance_engineers as t3 on t2.engineer_id = t3.engineer_id"
+    ]
+}}
+```
+
+
+Database schema:
+###
+{SCHEMA_STR}
+###
+Question: {QUESTION_TEXT}
+Hint of column to link with question tokens:
+{HINT}
+Answer:
+```

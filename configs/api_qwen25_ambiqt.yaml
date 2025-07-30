@@ -1,0 +1,22 @@
+setting_name: output_api_qwen25_ambiqt
+data_path: "/mnt/tampm/EmbeddingTaskAmbiText2SQL/AmbiVal_dataset/dev_final_dataset.json"
+
+agents:
+  intend_detection_dummy_sql:
+    template_name: 'intend_detection_dummysql'
+    engine_config:
+      engine: 'qwen/qwen2.5-coder-32b-instruct'
+      temperature: 0.0
+    parser_name: 'none'
+  schema_linking_llm_api:
+    template_name: 'schema_linking'
+    engine_config:
+      engine: 'qwen/qwen2.5-coder-32b-instruct'
+      temperature: 0.0
+    parser_name: 'none'
+  gen_ambiqt_sql:
+    template_name: 'gen_ambiqt_sql'
+    engine_config:
+      engine: 'qwen/qwen2.5-coder-32b-instruct'
+      temperature: 0.0
+    parser_name: 'none'

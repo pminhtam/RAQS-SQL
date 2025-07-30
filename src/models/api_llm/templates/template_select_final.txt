@@ -1,0 +1,17 @@
+You are an expert and very smart about database.
+This task is choosing best SQL query from list of provided SQL queries.
+Database schema and question are provided.
+Database schema have format like :
+###
+table1 : column1, column2, column3
+###
+
+Database schema:
+###
+{SCHEMA_STR}
+###
+Question: {QUESTION_TEXT}
+###
+List of provided SQL queries: {EXISTING_SQL_QUERY}
+Answer:
+```

@@ -1,0 +1,24 @@
+setting_name: output_api_qwen25_ambival_evidence
+data_path: "misc/dataset/AmbiVal/ambival/test.json"
+
+agents:
+  initial_sql:
+    template_name: 'initialsql'
+    engine_config:
+      engine: 'qwen/qwen2.5-coder-32b-instruct'
+      temperature: 0.0
+    parser_name: 'markdown'
+  embedding_search:
+    embedding_path: "misc/dataset/ambival_embedding"
+    model_embedding_name: "all-MiniLM-L6-v2"
+    str_emb: "{value}"
+  relational_classification_plm:
+    device: 'cuda:0'
+    model_path: "misc/model_weights/relational_classification/"
+  rewrite:
+    template_name: 'rewrite'
+    engine_config:
+      engine: 'qwen/qwen2.5-coder-32b-instruct'
+      temperature: 0.0
+    parser_name: 'markdown'
+    databases_dir: "misc/dataset/ambival/database_test/"

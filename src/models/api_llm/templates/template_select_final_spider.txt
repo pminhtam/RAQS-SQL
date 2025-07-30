@@ -1,0 +1,56 @@
+You are an expert and very smart about database.
+This task is choosing best SQL query from list of provided SQL queries.
+Database schema and question are provided.
+Database schema have format like :
+###
+table1 : column1, column2, column3
+###
+Write your answer in format like:
+```sql
+sql query
+```
+
+Example:
+Database schema:
+###
+Table Customers, columns = [`customer_id` (customer id. Example values: [1, 2, 3]), `customer_details` (customer details. Example values: [America Jaskolski, Ellsworth Paucek, Mrs. Hanna Willms])]
+Table Customer_Policies, columns = [`policy_id` (policy id. Example values: [119, 141, 143]), `customer_id` (customer id. Example values: [1, 2, 3]), `policy_type_code` (policy type code. Example values: [Car, Life, Property]), `start_date` (start date. Example values: [2018-01-21, 2017-08-21, 2017-06-16]), `end_date` (end date. Example values: [2017-12-15, 2017-09-29, 2017-12-09])]
+Table Claims, columns = [`claim_id` (claim id. Example values: [143, 423, 442]), `policy_id` (policy id. Example values: [744, 552, 473]), `date_claim_made` (date claim made. Example values: [2017-03-11, 2016-08-12, 2017-02-24]), `date_claim_settled` (date claim settled. Example values: [2017-11-03, 2018-01-27, 2018-01-21]), `amount_claimed` (amount claimed. Example values: [43884, 79134, 70088]), `amount_settled` (amount settled. Example values: [1085, 1724, 1189])]
+Table Settlements, columns = [`settlement_id` (settlement id. Example values: [357, 412, 476]), `claim_id` (claim id. Example values: [486, 621, 801]), `date_claim_made` (date claim made. Example values: [2018-08-07, 2017-08-27, 2016-09-05]), `date_claim_settled` (date claim settled. Example values: [2018-01-16, 2018-02-04, 2018-03-02]), `amount_claimed` (amount claimed. Example values: [38543, 57669, 30954]), `amount_settled` (amount settled. Example values: [1181, 1427, 1805]), `customer_policy_id` (customer policy id. Example values: [515, 617, 943])]
+Table Payments, columns = [`payment_id` (payment id. Example values: [384, 435, 484]), `settlement_id` (settlement id. Example values: [516, 476, 682]), `payment_method_code` (payment method code. Example values: [MasterCard, Discover Card, Visa]), `date_payment_made` (date payment made. Example values: [2018-02-16, 2017-05-28, 2017-06-24]), `amount_payment` (amount payment. Example values: [241730, 448613, 456098])]
+foreign keys = [Customer_Policies.Customer_ID = Customers.Customer_ID, Claims.Policy_ID = Customer_Policies.Policy_ID, Settlements.Claim_ID = Claims.Claim_ID, Payments.Settlement_ID = Settlements.Settlement_ID]
+###
+Question: Find the claims that led to more than two settlements or have the maximum claim value. For each of them, return the date the claim was made and the id of the claim.
+###
+List of provided SQL queries:
+SQL query:
+```sql
+SELECT c.claim_id, c.date_claim_made FROM Claims c JOIN Settlements s ON c.claim_id = s.claim_id GROUP BY c.claim_id, c.date_claim_made HAVING COUNT(s.settlement_id) > 2
+```
+This execution results: [(801, '2017-10-21')]
+SQL query:
+```sql
+SELECT claim_id, date_claim_made FROM Claims WHERE amount_claimed = (SELECT MAX(amount_claimed) FROM Claims)
+```
+This execution results: [(571, '2017-08-03')]
+SQL query:
+```sql
+SELECT claim_id, date_claim_made FROM (SELECT c.claim_id, c.date_claim_made FROM Claims c JOIN Settlements s ON c.claim_id = s.claim_id GROUP BY c.claim_id, c.date_claim_made HAVING COUNT(s.settlement_id) > 2 UNION SELECT claim_id, date_claim_made FROM Claims WHERE amount_claimed = (SELECT MAX(amount_claimed) FROM Claims)) subquery
+```
+This execution results: [(571, '2017-08-03'), (801, '2017-10-21')]
+Answer:
+Third query is the best choice because it combines the results of the first two queries into a single result set.
+But the question asks for returning the date the claim was made and the id of the claim, so the order of selected columns should be changed.
+Therefore, the best SQL query to answer the question is:
+```sql
+SELECT date_claim_made, claim_id FROM (SELECT c.claim_id, c.date_claim_made FROM Claims c JOIN Settlements s ON c.claim_id = s.claim_id GROUP BY c.claim_id, c.date_claim_made HAVING COUNT(s.settlement_id) > 2 UNION SELECT date_claim_made, claim_id FROM Claims WHERE amount_claimed = (SELECT MAX(amount_claimed) FROM Claims)) subquery
+```
+
+Database schema:
+###
+{SCHEMA_STR}
+###
+Question: {QUESTION_TEXT}
+###
+List of provided SQL queries: {EXISTING_SQL_QUERY}
+Answer:

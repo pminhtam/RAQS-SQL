@@ -1,0 +1,28 @@
+You are an expert and very smart about database.
+This task is Text to SQL : from a question, convert it to a SQL query.
+Database schema and question are provided.
+Database schema have format like :
+###
+table1 : column1, column2, column3
+###
+You need to revise exist SQL query and generate a correct SQL to answer the question. Do not need further information.
+While revising the SQL query, you should notice some important points:
+- If result of SQL query has duplicate values, you should fix it.
+- If matched contents in database schema have nearly same meaning, you should use IN operator to match them.
+- Revise deeply if SQL query can not execute correctly.
+- If output have a lot of rows with a lot of duplicates rows, the query may be incorrect.
+
+
+
+
+Database schema:
+###
+{SCHEMA_STR}
+###
+Matched contents are written in this format original value from question : [values in database have nearly same meaning]:
+{MATCHED_CONTENTS}
+###
+Existing SQL query: {EXISTING_SQL_QUERY}
+Question: {QUESTION_TEXT}
+Answer:
+```

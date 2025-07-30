@@ -1,0 +1,43 @@
+setting_name: bird_dev_api_qwen25
+data_path: "misc/dataset/SpiderBIRD_dataset/bird_dev.json"
+
+agents:
+  intend_detection_dummy_sql:
+    template_name: 'intend_detection_dummysql'
+    engine_config:
+      engine: 'qwen/qwen2.5-coder-32b-instruct'
+      temperature: 0.0
+    parser_name: 'none'
+  schema_linking_plm:
+    device: 'cuda:0'
+    model_path: "misc/model_weights/schema_linking/"
+    schema_dicts_path: "misc/dataset/SpiderBIRD_dataset/bird_dbschema_dev.json"
+  gen_many_sql:
+    template_name: 'gen_many_sql_bird'
+    engine_config:
+      engine: 'qwen/qwen2.5-coder-32b-instruct'
+      temperature: 0.0
+    parser_name: 'none'
+    databases_dir: "misc/dataset/SpiderBIRD_dataset/bird/dev_20240627/dev_databases"
+  embedding_search:
+    embedding_path: "misc/dataset/SpiderBIRD_dataset/bird_embedding"
+    model_embedding_name: "all-MiniLM-L6-v2"
+    str_emb: "{value}"
+  relational_classification_plm:
+    device: 'cuda:0'
+    model_path: "misc/model_weights/relational_classification/"
+  rewrite_spiderbird:
+    template_name: 'rewrite_bird'
+    engine_config:
+      engine: 'qwen/qwen2.5-coder-32b-instruct'
+      temperature: 0.0
+    parser_name: 'markdown'
+    databases_dir: "misc/dataset/SpiderBIRD_dataset/bird/dev_20240627/dev_databases"
+  select_final:
+    template_name: 'select_final_bird'
+    engine_config:
+      engine: 'qwen/qwen2.5-coder-32b-instruct'
+      temperature: 0.0
+    parser_name: 'markdown'
+    databases_dir: "misc/dataset/SpiderBIRD_dataset/bird/dev_20240627/dev_databases"
+

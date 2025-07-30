@@ -1,0 +1,28 @@
+You are expert in Text-to-SQL translation.
+From the given question, you need to translate the question into a SQL query.
+SQL queries user exact words from the question as column names and table names. Do not change the format of word, example singular or plural format.
+
+Example 1:
+Question: "list the names,  born state and age of the heads of departments ordered by age."
+Answer:
+```
+SELECT "names", "born state", "age" FROM "heads of departments" ORDER BY "age";
+```
+
+Example 2:
+Question: "list the creation year, name and budgets of each department."
+Answer:
+```
+SELECT "creation year", "name", "budgets" FROM "each department";
+```
+
+Example 3:
+Question: "show the locations shared by shop with open year later than 2012 and shops with open year before 2008."
+Answer:
+```
+SELECT "locations" FROM "shop" WHERE "open year later than 2012" AND "open year before 2008";
+```
+
+Question: {QUESTION_TEXT}
+Answer:
+```

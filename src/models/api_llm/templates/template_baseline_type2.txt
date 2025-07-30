@@ -1,0 +1,111 @@
+You are an expert and very smart about database.
+This task is Text to SQL : from a question, convert it to a SQL query.
+Database schema and question are provided.
+Database schema have format like :
+###
+table1 : column1, column2, column3
+###
+You need to write a SQL query to answer the question. Do not need further information.
+
+Example 1:
+Database schema:
+###
+Table department, columns = [Department_ID, Name, Creation, Ranking, Budget_in_Billions, Num_Employees]
+Table head, columns = [head_ID, name, born_state, age]
+Table management, columns = [department_ID, head_ID, temporary_acting]
+foreign keys = [management.head_ID = head.head_ID, management.department_ID = department.Department_ID]
+###
+Matched contents are written in this format table.column (some values can be found in that column)
+matched contents :
+###
+head.born_state : ['Alabama', 'California, USA', 'Golden State', 'California', 'CA', 'Delaware', 'Florida', 'Connecticut']
+management.temporary_acting : ['Yes', 'No']
+###
+Question: What are the names of the heads who are born outside the California state?
+Answer:
+```
+SELECT name FROM head WHERE NOT born_state IN ('California, USA', 'Golden State', 'California', 'CA')
+```
+
+Example 2:
+Database schema:
+###
+Table station, columns = [id, name, lat, long, dock_count, city, installation_date]
+Table status, columns = [station_id, bikes_available, docks_available, time]
+Table trip, columns = [id, duration, start_date, start_station_name, start_station_id, end_date, end_station_name, end_station_id, bike_id, subscription_type, zip_code]
+Table weather, columns = [date, max_temperature_f, mean_temperature_f, min_temperature_f, max_dew_point_f, mean_dew_point_f, min_dew_point_f, max_humidity, mean_humidity, min_humidity, max_sea_level_pressure_inches, mean_sea_level_pressure_inches, min_sea_level_pressure_inches, max_visibility_miles, mean_visibility_miles, min_visibility_miles, max_wind_Speed_mph, mean_wind_speed_mph, max_gust_speed_mph, precipitation_inches, cl$ud_cover, events, wind_dir_degrees, zip_code]
+foreign keys = [status.station_id = station.id]
+###
+Matched contents are written in this format table.column (some values can be found in that column)
+matched contents :
+###
+station.city : ['Mountain View', 'Mountain View, California', 'MV, California', 'Mountain View city', 'San Jose', 'Redwood City', 'Palo Alto', 'San Francisco']
+weather.events : ['Rain', 'Fog', 'Fog-Rain', 'Rain-Thunderstorm', 'Fog-Rain-Thunderstorm', 'Rain-Thunderstorm-Tornado', 'Fog-Rain-Thunderstorm-Tornado', 'Fog-Rain-Tornado', 'Fog-Tornado', 'Rain-Tornado']
+###
+Question: How many stations does Mountain View city has?
+Answer:
+```
+SELECT COUNT(*) FROM station WHERE city IN ('Mountain View', 'Mountain View, California', 'MV, California', 'Mountain View city')
+```
+
+Example 3:
+###
+Table 1-2009095-2, columns = [Outcome, Year, Championship, Surface, Partner, Opponents, Score]
+###
+Matched contents are written in this format table.column (some values can be found in that column)
+matched contents :
+###
+1-2009095-2.championship : ['australian open championship', 'australian open tournament', 'australian open', 'wimbledon']
+1-2009095-2.outcome : ['championship winner', 'winner', 'first place', 'runner-up', 'second place', 'third place', 'fourth place', 'fifth place', 'sixth place', 'seventh place', 'eighth place']
+###
+Question: Name the surface for australian open for winner
+Answer:
+```
+SELECT "surface" FROM "1-2009095-2" WHERE championship IN ('australian open championship', 'australian open tournament', 'australian open') AND outcome IN ('championship winner', 'winner', 'first place')
+```
+
+Example 4:
+Database schema:
+###
+Table 1-240936-2, columns = [DVD Name, Ep #, Region 1 (US), Region 1 (CAN), Region 2 (UK), Region 2 (Germany), Region 4 (Australia)]
+###
+Matched contents are written in this format table.column (some values can be found in that column)
+matched contents :
+###
+1-240936-2."region 2 (uk)" : ['july 13, 2009', '13th july 2009', 'january 29, 2007', 'may 18, 2009', 'july 9, 2007', 'september 15, 2008', 'june 21, 2010', 'september 20, 2010', 'march 22, 2010', 'february 9, 2009']
+###
+Question: How many region 4 dates are associated with a region 2 date of july 13, 2009?
+Answer:
+```
+SELECT COUNT("region 4 (australia)") FROM "1-240936-2" WHERE "region 2 (uk)" IN ('july 13, 2009', '13th july 2009')
+```
+
+Example 5:
+Database schema:
+###
+Table 1-1682026-7, columns = [Rank, Company, Headquarters, Industry, Sales (billion $), Profits (billion $), Assets (billion $), Market Value (billion $)]
+###
+Matched contents are written in this format table.column (some values can be found in that column)
+matched contents :
+###
+1-1682026-7.industry : ['retailing', 'downstream', 'diversified financials', 'natural gas', 'insurance', 'oil and gas', 'banking', 'automotive']
+1-1682026-7.headquarters : ['france', 'netherlands country', 'uk', 'netherlands', 'germany', 'japan', 'usa', 'the netherlands']
+###
+Question: What is the highest rank of a company in the oil and gas industry headquartered in Netherlands?
+Answer:
+```
+SELECT MAX("rank") FROM "1-1682026-7" WHERE industry IN ('downstream', 'natural gas', 'oil and gas') AND headquarters IN ('netherlands country', 'netherlands', 'the netherlands')
+```
+
+Database schema:
+###
+{SCHEMA_STR}
+###
+Matched contents are written in this format table.column (some values can be found in that column)
+matched contents :
+###
+{MATCHED_CONTENTS}
+###
+Question: {QUESTION_TEXT}
+Answer:
+```

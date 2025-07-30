@@ -1,0 +1,46 @@
+You are an expert and very smart about database.
+This task is Text to SQL : from a question, convert it to a SQL query.
+Database schema and question are provided.
+Database schema have format like :
+###
+Table table_name, columns= [`column1` (explain meaning of column1. Example values: [list of example stored in database]), `column2` (explain meaning of column2), `column3`]
+###
+You need to write a SQL query to answer the question. Do not need further information.
+With column have special characters, you need to use `column_name` to refer to that column.
+
+Example 1:
+Database schema:
+###
+Table department, columns = [Department_ID (Department id. Example values: [1, 3, 6]), Name, Creation, Ranking, Budget_in_Billions (Budget in Billions), Num_Employees (Number of Employees)]
+Table head, columns = [head_ID, name, born_state (born state. Example values: [Arizona, Queensland, Texas]), age]
+Table management, columns = [department_ID, head_ID, temporary_acting (Temporary Acting)]
+foreign keys = [management.head_ID = head.head_ID, management.department_ID = department.Department_ID]
+###
+Question: What are the names of the heads who are born outside the California state?
+Answer:
+```
+SELECT name FROM head WHERE NOT `born_state` =  'California'
+```
+
+Example 2:
+Database schema:
+###
+Table station, columns = [id, name, `lat` (latitude) , `long` (longtitude), dock_count, city (city. Example values: [Phoenix, San Francisco, New York]), installation_date]
+Table status, columns = [station_id, bikes_available, docks_available, time]
+Table trip, columns = [id, duration, start_date, start_station_name, start_station_id, end_date, end_station_name, end_station_id, bike_id, subscription_type, zip_code]
+Table weather, columns = [date, max_temperature_f, mean_temperature_f, min_temperature_f, max_dew_point_f, mean_dew_point_f, min_dew_point_f, max_humidity, mean_humidity, min_humidity, max_sea_level_pressure_inches, mean_sea_level_pressure_inches, min_sea_level_pressure_inches, max_visibility_miles, mean_visibility_miles, min_visibility_miles, max_wind_Speed_mph, mean_wind_speed_mph, max_gust_speed_mph, precipitation_inches, cl$ud_cover, events, wind_dir_degrees, zip_code]
+foreign keys = [status.station_id = station.id]
+###
+Question: How many stations does Mountain View city has?
+Answer:
+```
+SELECT COUNT(*) FROM station WHERE `city` = 'Mountain View'
+```
+
+Database schema:
+###
+{SCHEMA_STR}
+###
+Question: {QUESTION_TEXT}
+Answer:
+```
