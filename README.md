@@ -1,6 +1,11 @@
-# RAQS-SQL : Resolving Ambiguities in Text-to-SQL Systems
+# RAQS-SQL: Schema and Value Ambiguity Resolution in Text-to-SQL
 
 Code for paper: Resolving Ambiguities in Text-to-SQL Systems
+
+<div align="center">
+  <img src="assets/raqs_sql_framework.jpg" alt="Introduction Figure"  width="800" />
+</div>
+
 
 We propose the RAQS-SQL framework to Resolve Ambiguities in QuestionS for Text-to-SQL system.
 To handle schema-level ambiguity, we use a model that aligns the query intent directly with relevant database columns. To handle value ambiguity, we introduce techniques leveraging semantic similarities and hierarchical entity relationships of value entities stored in the database and in the question.

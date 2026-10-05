@@ -5,6 +5,11 @@ Data is publicly available at [https://huggingface.co/datasets/griffith-bigdata/
 
 ## Overview
 
+<div align="center">
+  <img src="datapipeline-svg.svg" alt="Introduction Figure"  width="500" />
+</div>
+
+
 The pipeline creates training/evaluation data where database values are replaced with ambiguous synonyms (e.g., "europe" → "european continent", "dog" → "canine"). This tests whether Text-to-SQL models can handle value ambiguity — when the user's phrasing differs from the exact value stored in the database.
 
 ```
